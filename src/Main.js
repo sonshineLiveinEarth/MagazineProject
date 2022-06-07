@@ -8,34 +8,37 @@ const Main = () => {
   return (
     <>
       <Margin />
-      <PostBoxA>
-        <Profile>
-          <ProfileImg />
-          <Nickname>nickname</Nickname>
-        </Profile>
+      <Wrap>
+        <PostBoxA>
+          <Profile>
+            <ProfileImg />
+            <Nickname>nickname</Nickname>
+          </Profile>
 
-        <PostImage />
-        <PostContent>
-          <Nickname>nickname</Nickname>여기에 내용이 들어갑니다. 여기에 내용이
-          들어갑니다. 여기에 내용이 들어갑니다. 여기에 내용이 들어갑니다.
-        </PostContent>
-        <PostDate>2022.06.06 21:35</PostDate>
-        <Hr />
-      </PostBoxA>
-      <PostBoxA>
-        <Profile>
-          <ProfileImg />
-          <Nickname>nickname</Nickname>
-        </Profile>
+          <PostImage />
+          <PostContent>
+            <Nickname>nickname</Nickname>여기에 내용이 들어갑니다. 여기에 내용이
+            들어갑니다. 여기에 내용이 들어갑니다. 여기에 내용이 들어갑니다.
+          </PostContent>
+          <PostDate>2022.06.06 21:35</PostDate>
+          <Hr />
+        </PostBoxA>
+        <PostBoxA>
+          <Profile>
+            <ProfileImg />
+            <Nickname>nickname</Nickname>
+          </Profile>
 
-        <PostImage />
-        <PostContent>
-          <Nickname>nickname</Nickname>여기에 내용이 들어갑니다. 여기에 내용이
-          들어갑니다. 여기에 내용이 들어갑니다. 여기에 내용이 들어갑니다.
-        </PostContent>
-        <PostDate>2022.06.06 21:35</PostDate>
-        <Hr />
-      </PostBoxA>
+          <PostImage />
+          <PostContent>
+            <Nickname>nickname</Nickname>여기에 내용이 들어갑니다. 여기에 내용이
+            들어갑니다. 여기에 내용이 들어갑니다. 여기에 내용이 들어갑니다.
+          </PostContent>
+          <PostDate>2022.06.06 21:35</PostDate>
+          <Hr />
+        </PostBoxA>
+      </Wrap>
+
       <PostBtn
         onClick={() => {
           navigate("/write");
@@ -52,8 +55,14 @@ const Margin = styled.div`
   height: 8vh;
 `;
 
-const PostBoxA = styled.div`
+const Wrap = styled.div`
+  max-width: 600px;
   width: 100vw;
+  height: auto;
+`;
+
+const PostBoxA = styled.div`
+  width: auto;
   height: auto;
   display: flex;
   flex-direction: column;

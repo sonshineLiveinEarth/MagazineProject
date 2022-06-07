@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 
 import { auth, db } from "./shared/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -37,7 +38,7 @@ const Login = () => {
           <Input ref={pw_ref} placeholder="비밀번호" />
           <LoginBtn
             onClick={() => {
-              loginFB();
+              loginFB().then(navigate("/"));
             }}
           >
             로그인하기
@@ -62,7 +63,7 @@ const Wrap = styled.div`
   margin-top: 300px;
 `;
 
-const Form = styled.form`
+const Form = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
