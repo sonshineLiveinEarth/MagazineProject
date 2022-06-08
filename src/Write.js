@@ -1,11 +1,48 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { auth } from "./shared/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "./shared/firebase.js";
+import { createMagazineFB } from "./redux/modules/magazine";
 
-const Write = () => {
+const Write = (proprs) => {
   const navigate = useNavigate();
-  const [PostingImage, setPostingImage] = useState();
+  const dispatch = useDispatch();
+  const [PostingImage, setPostingImage] = useState(null);
+  const [layout, setLayout] = useState(null);
+  // 현재 로그인한 유저의 데이터
+  const [userData, setUserData] = useState(null);
+  // 포스팅내용 미입력시 버튼 비활성화
+  const [text, enableButton] = useState("");
 
+  const handleTextChange = (event) => {
+    if (PostingImage !== null && layout !== null) {
+      enableButton(event.target.value);
+    }
+  };
+
+  const textContent = React.useRef(null);
+
+  // 현재 로그인되어 있는 유저id == 'users' DB 에 동일한 id를 가지고 있는 객체 불어오기!
+  const user_data = collection(db, "users");
+  const q = query(user_data, where("user_id", "==", auth.currentUser.email));
+
+  const querySnapshot = async () => {
+    const snapshot = await getDocs(q);
+    snapshot.forEach((doc) => {
+      console.log(doc.data());
+      setUserData(doc.data());
+    });
+  };
+
+  React.useEffect(() => {
+    querySnapshot();
+  }, []);
+
+  // 업로드한 사진 미리보기
   const reader = new FileReader();
 
   const preview = (e) => {
@@ -18,28 +55,62 @@ const Write = () => {
     });
   };
 
-  // const addPost = () => {
-  //       pinyin: pinyin.current.value,
-  //       def: def.current.value,
-  //       ExEn: ExEn.current.value,
-  //       ExKo: ExKo.current.value,
-  //       completed: 0,
-  // };
+  // 레이아웃 라디오버튼 값 변경하기
+  const handleChange = (e) => {
+    setLayout(e.target.value);
+  };
+
+  const addPost = () => {
+    //포스팅 작성한 시간 커스텀하기
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = Number(now.getMonth() + 1);
+    const date = now.getDate();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    const time = year + "." + month + "." + date + " " + hours + ":" + minutes;
+    // 파이어베이스에 데이터 추가하기!
+    dispatch(
+      createMagazineFB({
+        posting_comment: [],
+        posting_image: PostingImage.url,
+        posting_layoutType: layout,
+        posting_like: 0,
+        posting_text: textContent.current.value,
+        posting_time: time,
+        user_id: userData.user_id,
+        user_nickname: userData.name,
+        user_profileImage: userData.image_url,
+      })
+    );
+  };
 
   return (
     <>
       <Margin />
+
       <Wrap>
         <Title>레이아웃 선택</Title>
         <LayoutBoxs>
           <LayoutBox1>
-            <RadioBtn type="radio" name="layout" />
+            <RadioBtn
+              type="radio"
+              name="layout"
+              value="layoutA"
+              onChange={handleChange}
+            />
             <ImageBox></ImageBox>
             <Text>문구가 아래에</Text>
           </LayoutBox1>
 
           <LayoutBox>
-            <RadioBtn type="radio" name="layout" />
+            <RadioBtn
+              type="radio"
+              name="layout"
+              value="layoutB"
+              onChange={handleChange}
+            />
             <LayoutBoxSmall>
               <Text>
                 문구가 <br /> 왼쪽
@@ -49,7 +120,12 @@ const Write = () => {
           </LayoutBox>
 
           <LayoutBox>
-            <RadioBtn type="radio" name="layout" />
+            <RadioBtn
+              type="radio"
+              name="layout"
+              value="layoutC"
+              onChange={handleChange}
+            />
             <LayoutBoxSmall>
               <ImageBox></ImageBox>
               <TextR>
@@ -58,7 +134,6 @@ const Write = () => {
             </LayoutBoxSmall>
           </LayoutBox>
         </LayoutBoxs>
-
         <Div2>
           <Title>사진 선택</Title>
           <Div3>
@@ -82,12 +157,17 @@ const Write = () => {
             <InputFile onChange={preview} type="file" id="postImage" />
           </Div3>
         </Div2>
-        <TextContent placeholder="문구를 작성해주세요" />
+        <TextContent
+          onChange={handleTextChange}
+          ref={textContent}
+          placeholder="문구를 작성해주세요"
+        />
         <DoneBtn
           onClick={() => {
-            // addPost();
+            addPost();
             navigate("/");
           }}
+          disabled={!text}
         >
           작성 완료
         </DoneBtn>
@@ -223,14 +303,6 @@ const ImageFeild = styled.div`
 
 /* 파일첨부 기본 디자인을 없애는 css */
 const InputFile = styled.input`
-  /* position: absolute; */
-  /* width: 1px;
-  height: 1px; */
-  /* padding: 0;
-  margin: -1px;
-  overflow: hidden; */
-  /* clip: rect(0, 0, 0, 0); */
-  /* text-align: center; */
   position: absolute;
   width: 98px;
   height: 46px;
@@ -288,6 +360,10 @@ const DoneBtn = styled.button`
   font-size: 16px;
   &:hover {
     opacity: 0.8;
+  }
+  &:disabled {
+    background-color: #aaa;
+    border: 1px solid #aaa;
   }
 `;
 

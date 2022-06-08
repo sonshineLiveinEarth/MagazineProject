@@ -11,13 +11,36 @@ import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const Signup = () => {
-  const [profileImage, setProfileImage] = useState();
+  // 인풋내용 미입력시 버튼 비활성화
+  const [usernickname, setNickname] = useState(false);
+  const [userID, setUserID] = useState(false);
+  const [userPW, setUserPW] = useState(false);
+  const [userPWsub, setUserPWsub] = useState(false);
+
+  const [profileImage, setProfileImage] = useState(false);
   const navigate = useNavigate();
   const name_ref = React.useRef(null);
   const id_ref = React.useRef(null);
   const pw_ref = React.useRef(null);
   const pw_ref2 = React.useRef(null);
   const file_link_ref = React.useRef(null);
+
+  // 인풋내용 입력시 state 변경하는 함수
+  const handleTextChangeNickname = (event) => {
+    setNickname(event.target.value);
+  };
+
+  const handleTextChangeID = (event) => {
+    setUserID(event.target.value);
+  };
+
+  const handleTextChangePW = (event) => {
+    setUserPW(event.target.value);
+  };
+
+  const handleTextChangePWsub = (event) => {
+    setUserPWsub(event.target.value);
+  };
 
   const signupFB = async () => {
     const user = await createUserWithEmailAndPassword(
@@ -29,31 +52,27 @@ const Signup = () => {
         // Signed in
         const user = userCredential.user;
         navigate("/");
+        const user_data = addDoc(collection(db, "users"), {
+          user_id: id_ref.current?.value,
+          name: name_ref.current?.value,
+          image_url: profileImage.url,
+        });
+        console.log(user_data);
+        const uploadFB = async () => {
+          console.log(profileImage.name.name);
+          const uploaded_file = await uploadBytes(
+            ref(storage, `images/${profileImage.name.name}`),
+            profileImage.name
+          );
+          console.log(uploaded_file);
+
+          const file_url = await getDownloadURL(uploaded_file.ref);
+          file_link_ref.current = { url: file_url };
+        };
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
         window.alert("제대로 입력했는지 확인해주세요.");
       });
-
-    const user_data = await addDoc(collection(db, "users"), {
-      user_id: id_ref.current?.value,
-      name: name_ref.current?.value,
-      image_url: profileImage.url,
-    });
-    console.log(user_data);
-  };
-
-  const uploadFB = async () => {
-    console.log(profileImage.name.name);
-    const uploaded_file = await uploadBytes(
-      ref(storage, `images/${profileImage.name.name}`),
-      profileImage.name
-    );
-    console.log(uploaded_file);
-
-    const file_url = await getDownloadURL(uploaded_file.ref);
-    file_link_ref.current = { url: file_url };
   };
 
   const reader = new FileReader();
@@ -68,26 +87,40 @@ const Signup = () => {
     });
   };
 
-  // if (!name_ref || !id_ref || !pw_ref || !pw_ref2 || !file_link_ref)
   return (
     <>
       <Wrap>
         <Div>
           <Title>닉네임</Title>
-          <Input ref={name_ref} placeholder="닉네임" />
+          <Input
+            onChange={handleTextChangeNickname}
+            ref={name_ref}
+            placeholder="닉네임을 입력해주세요."
+          />
         </Div>
-
         <Div>
           <Title>아이디</Title>
-          <Input ref={id_ref} placeholder="아이디" />
+          <Input
+            onChange={handleTextChangeID}
+            ref={id_ref}
+            placeholder="이메일 형식으로 입력해주세요."
+          />
         </Div>
-
         <Div>
           <Title>비밀번호</Title>
-          <Input ref={pw_ref} placeholder="비밀번호" />
-          <Input ref={pw_ref2} placeholder="비밀번호 확인" />
+          <Input
+            onChange={handleTextChangePW}
+            ref={pw_ref}
+            placeholder="6자 이상의 비밀번호를 설정해주세요."
+            type="password"
+          />
+          <Input
+            onChange={handleTextChangePWsub}
+            ref={pw_ref2}
+            placeholder="비밀번호를 한번 더 입력해주세요."
+            type="password"
+          />
         </Div>
-
         <Div2>
           <Title>프로필 사진</Title>
           <Div3>
@@ -117,19 +150,18 @@ const Signup = () => {
             />
           </Div3>
         </Div2>
-
-        {!name_ref || !id_ref || !pw_ref || !pw_ref2 ? (
-          <SignupBtn disabled />
-        ) : (
-          <SignupBtn
-            onClick={() => {
-              signupFB();
-              uploadFB();
-            }}
-          >
-            회원가입 완료
-          </SignupBtn>
-        )}
+        <SignupBtn
+          onClick={() => {
+            signupFB();
+          }}
+          disabled={
+            !usernickname || !userID || !userPW || !userPWsub || !profileImage
+              ? true
+              : false
+          }
+        >
+          회원가입 완료
+        </SignupBtn>
       </Wrap>
     </>
   );
@@ -200,6 +232,7 @@ const Input = styled.input`
   padding: 0px 10px;
   border: 1px solid #c7c7c7;
   border-radius: 8px;
+  font-size: 16px;
   &::placeholder {
     color: #c7c7c7;
     font-weight: bold;
@@ -253,19 +286,19 @@ const SignupBtn = styled.button`
   width: 90%;
   height: 56px;
   margin-top: 60px;
-  background-color: #00000090;
+  background-color: black;
   border: 1px solid black;
   border-radius: 8px;
-  color: #ddd;
+  color: white;
   font-weight: bold;
   font-size: 16px;
-  &:enabled {
-    background-color: #000000;
-    border: 1px solid black;
-    color: white;
-  }
-  &:hover:enabled {
+  &:hover {
     opacity: 0.8;
+  }
+
+  &:disabled {
+    background-color: #aaa;
+    border: 1px solid black;
   }
 `;
 

@@ -1,10 +1,10 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "./shared/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 import img from "./magazine_logo.png";
 import Login from "./Login";
@@ -15,7 +15,24 @@ import Write from "./Write";
 function App() {
   const navigate = useNavigate();
   const [is_login, setIsLogin] = React.useState(false);
-  // console.log(auth.currentUser);
+  // 현재 로그인한 유저의 데이터
+  const [userData, setUserData] = useState(null);
+
+  // 현재 로그인되어 있는 유저id == 'users' DB 에 동일한 id를 가지고 있는 객체 불어오기!
+  // const user_data = collection(db, "users");
+  // const q = query(user_data, where("user_id", "==", auth.currentUser.email));
+
+  // const querySnapshot = async () => {
+  //   const snapshot = await getDocs(q);
+  //   snapshot.forEach((doc) => {
+  //     console.log(doc.data());
+  //     setUserData(doc.data());
+  //   });
+  // };
+
+  // React.useEffect(() => {
+  //   querySnapshot();
+  // }, []);
 
   const loginCheck = async (user) => {
     if (user) {
@@ -45,14 +62,19 @@ function App() {
             src={img}
           />
           {is_login ? (
-            <HLoginBtn
-              onClick={() => {
-                onLogOutClick();
-                navigate("/login");
-              }}
-            >
-              로그아웃
-            </HLoginBtn>
+            <>
+              <ProfileWrap>
+                <HLoginBtn
+                  onClick={() => {
+                    onLogOutClick();
+                    navigate("/login");
+                  }}
+                >
+                  로그아웃
+                </HLoginBtn>
+                <ProfileImage />
+              </ProfileWrap>
+            </>
           ) : (
             <HLoginBtn
               onClick={() => {
@@ -65,12 +87,7 @@ function App() {
         </Div>
       </Header>
       <Routes>
-        {is_login ? (
-          <Route path="/" element={<Main />} />
-        ) : (
-          <Route path="/login" element={<Login />} />
-        )}
-        {/* <Route path="/" element={is_login ? <Main /> : <Login />} /> */}
+        <Route path="/" element={<Main is_login={is_login} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/write" element={<Write />} />
@@ -111,17 +128,32 @@ const Logo = styled.img`
   width: 30px;
   height: 33px;
 `;
+const ProfileWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: center;
+`;
 
 const HLoginBtn = styled.button`
   width: auto;
   height: 33px;
-  margin-right: 36px;
-  font-size: 16px;
+  margin-right: 20px;
+  font-size: 14px;
   background-color: transparent;
   border: none;
   text-decoration: underline;
   color: #9f9f9f;
-  padding-right: 26px;
+`;
+
+const ProfileImage = styled.div`
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  background-color: #ddd;
+  border-radius: 50%;
+  margin-right: 52px;
+  /* background-image: url(${(props) => props}); */
 `;
 
 export default App;

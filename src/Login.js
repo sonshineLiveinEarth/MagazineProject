@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
@@ -12,6 +12,20 @@ const Login = () => {
 
   const id_ref = React.useRef(null);
   const pw_ref = React.useRef(null);
+
+  // 포스팅내용 미입력시 버튼 비활성화
+  const [ID, enableButton] = useState("");
+  const [password, enableButton2] = useState("");
+
+  const handleTextChangeID = (event) => {
+    if (password !== "") {
+      enableButton(event.target.value);
+    }
+  };
+
+  const handleTextChangePW = (event) => {
+    enableButton2(event.target.value);
+  };
 
   const loginFB = async () => {
     console.log(id_ref.current.value, pw_ref.current.value);
@@ -34,12 +48,21 @@ const Login = () => {
     <>
       <Wrap>
         <Form>
-          <Input ref={id_ref} placeholder="아이디" />
-          <Input ref={pw_ref} placeholder="비밀번호" />
+          <Input
+            ref={id_ref}
+            placeholder="아이디"
+            onChange={handleTextChangeID}
+          />
+          <Input
+            ref={pw_ref}
+            placeholder="비밀번호"
+            onChange={handleTextChangePW}
+          />
           <LoginBtn
             onClick={() => {
               loginFB().then(navigate("/"));
             }}
+            disabled={!password && !ID}
           >
             로그인하기
           </LoginBtn>
@@ -79,6 +102,7 @@ const Input = styled.input`
   padding: 0px 10px;
   border: 1px solid #c7c7c7;
   border-radius: 8px;
+  font-size: 16px;
   &::placeholder {
     color: #aaa;
     font-weight: bold;
@@ -103,6 +127,10 @@ const LoginBtn = styled.button`
   font-size: 16px;
   &:hover {
     opacity: 0.8;
+  }
+  &:disabled {
+    background-color: #aaa;
+    border: 1px solid #aaa;
   }
 `;
 
