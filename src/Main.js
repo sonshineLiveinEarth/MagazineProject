@@ -22,6 +22,12 @@ const Main = (props) => {
     onAuthStateChanged(auth, loginCheck);
   }, []);
 
+  console.log(props.is_login);
+
+  // if (props.is_login) {
+  //   return <ProfileImage profileImage={user_lists.image_url} />;
+  // }
+
   return (
     <>
       <Margin />

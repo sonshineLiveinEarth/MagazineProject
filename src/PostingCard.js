@@ -14,15 +14,21 @@ const PostingCard = (props) => {
   React.useEffect(() => {
     dispatch(loadMagazineFB());
   }, []);
-  console.log(posting_lists);
+
   return (
     <>
       {posting_lists.map((list, index) => {
         return (
           <React.Fragment key={index}>
-            {list.posting_layoutType === "layoutA" && <PostBoxA list={list} />}
-            {list.posting_layoutType === "layoutB" && <PostBoxB list={list} />}
-            {list.posting_layoutType === "layoutC" && <PostBoxC list={list} />}
+            {list.posting_layoutType === "layoutA" && (
+              <PostBoxA list={list} index={index} />
+            )}
+            {list.posting_layoutType === "layoutB" && (
+              <PostBoxB list={list} index={index} />
+            )}
+            {list.posting_layoutType === "layoutC" && (
+              <PostBoxC list={list} index={index} />
+            )}
           </React.Fragment>
         );
       })}

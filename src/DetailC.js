@@ -1,51 +1,67 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { auth } from "./shared/firebase";
+import { useParams } from "react-router-dom";
 import { deleteMagazineFB } from "./redux/modules/magazine";
 import { useDispatch } from "react-redux";
+import { auth } from "./shared/firebase";
 
-const PostBoxC = (list) => {
-  const navigate = useNavigate();
+const DetailC = (list) => {
+  const index = useParams();
+  const posting = list.list[index.index];
   const dispatch = useDispatch();
 
   return (
-    <PostBox3>
-      <ProfileWrap>
-        <Profile>
-          <ProfileImg profileImage={list.list.user_profileImage} />
-          <Nickname>{list.list.user_nickname}</Nickname>
-        </Profile>
-        {auth.currentUser !== null
-          ? list.list.user_id === auth.currentUser.email && (
-              <DeleteBtn
-                onClick={() => {
-                  dispatch(deleteMagazineFB(list.list.id));
-                }}
-              >
-                삭제
-              </DeleteBtn>
-            )
-          : null}
-      </ProfileWrap>
+    <>
+      <Margin />
+      <Wrap>
+        <PostBox3>
+          <ProfileWrap>
+            <Profile>
+              <ProfileImg profileImage={posting.user_profileImage} />
+              <Nickname>{posting.user_nickname}</Nickname>
+            </Profile>
+            {auth.currentUser !== null
+              ? posting.user_id === auth.currentUser.email && (
+                  <>
+                    <ModifiBtn>수정</ModifiBtn>
+                    <DeleteBtn
+                      onClick={() => {
+                        dispatch(deleteMagazineFB(list.list.id));
+                      }}
+                    >
+                      삭제
+                    </DeleteBtn>
+                  </>
+                )
+              : null}
+          </ProfileWrap>
 
-      <ContentsWrapB>
-        <PostImageB
-          postImage={list.list.posting_image}
-          onClick={() => {
-            navigate(`/detail/c/${list.index}`);
-          }}
-        />
-        <PostContentB>
-          {list.list.posting_text}
-          <PostDateB>{list.list.posting_time}</PostDateB>
-        </PostContentB>
-      </ContentsWrapB>
+          <ContentsWrapB>
+            <PostImageB postImage={posting.posting_image} />
+            <PostContentB>
+              {posting.posting_text}
+              <PostDateB>{posting.posting_time}</PostDateB>
+            </PostContentB>
+          </ContentsWrapB>
 
-      <Hr />
-    </PostBox3>
+          <Hr />
+        </PostBox3>
+      </Wrap>
+    </>
   );
 };
+
+const Margin = styled.div`
+  width: 100vw;
+  height: 8vh;
+`;
+
+const Wrap = styled.div`
+  max-width: 600px;
+  width: 100vw;
+  height: auto;
+  margin: auto;
+`;
 
 const PostBox3 = styled.div`
   width: auto;
@@ -71,6 +87,16 @@ const ProfileWrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+`;
+
+const ModifiBtn = styled.button`
+  width: 60px;
+  height: auto;
+  text-decoration: underline;
+  color: #aaa;
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
 `;
 
 const DeleteBtn = styled.button`
@@ -114,6 +140,7 @@ const PostImageB = styled.div`
   padding-bottom: 50%;
   margin-top: 20px;
   align-self: flex-end;
+  background-color: #ddd;
   background-image: url(${(props) => props.postImage});
   background-position: center 30%;
   background-size: cover;
@@ -141,4 +168,4 @@ const Hr = styled.hr`
   border: 0.5px solid #f2f2f2;
 `;
 
-export default PostBoxC;
+export default DetailC;

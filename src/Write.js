@@ -14,7 +14,7 @@ const Write = (proprs) => {
   const [PostingImage, setPostingImage] = useState(null);
   const [layout, setLayout] = useState(null);
   // 현재 로그인한 유저의 데이터
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(false);
   // 포스팅내용 미입력시 버튼 비활성화
   const [text, enableButton] = useState("");
 
@@ -25,8 +25,8 @@ const Write = (proprs) => {
   };
 
   const textContent = React.useRef(null);
-
-  // 현재 로그인되어 있는 유저id == 'users' DB 에 동일한 id를 가지고 있는 객체 불어오기!
+  console.log(auth.currentUser.email);
+  // 현재 로그인되어 있는 유저id == 'users' DB 에 동일한 id를 가지고 있는 객체 불러오기!
   const user_data = collection(db, "users");
   const q = query(user_data, where("user_id", "==", auth.currentUser.email));
 
@@ -68,11 +68,15 @@ const Write = (proprs) => {
     const date = now.getDate();
     const hours = now.getHours();
     const minutes = now.getMinutes();
+    const postingID = Date.now();
+    console.log(postingID);
+    console.log(userData.image_url);
 
     const time = year + "." + month + "." + date + " " + hours + ":" + minutes;
     // 파이어베이스에 데이터 추가하기!
     dispatch(
       createMagazineFB({
+        posting_id: postingID,
         posting_comment: [],
         posting_image: PostingImage.url,
         posting_layoutType: layout,

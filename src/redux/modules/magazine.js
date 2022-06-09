@@ -7,6 +7,9 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  query,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 
 // Actions
@@ -21,13 +24,14 @@ export default function reducer(state = initalState, action = {}) {
   switch (action.type) {
     case "magazine/LOAD": {
       console.log("이제 값을 불러올거야");
-      console.log(action.magazine.sort());
-
+      console.log(action.magazine);
+      // const q = query(action.magazine, orderBy("posting_id"), limit(1000));
       return { list: action.magazine, is_loaded: true };
     }
 
     case "magazine/CREATE": {
       console.log("이제 값을 만들거야");
+
       const new_magazine_list = [...state.list];
       return { ...state, list: new_magazine_list };
     }
@@ -152,6 +156,7 @@ export const loadMagazineFB = () => {
 
     magazine_data.forEach((magazine) => {
       magazine_list.push({ id: magazine.id, ...magazine.data() });
+      // console.log(magazine_list);
     });
     dispatch(loadMagazine(magazine_list));
   };

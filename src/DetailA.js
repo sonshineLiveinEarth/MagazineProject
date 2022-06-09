@@ -1,52 +1,65 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { deleteMagazineFB } from "./redux/modules/magazine";
 import { useDispatch } from "react-redux";
 import { auth } from "./shared/firebase";
 // import { useSelector } from "react-redux";
 
-console.log(auth.currentUser);
-
-const PostBoxA = (list) => {
-  const navigate = useNavigate();
+const DetailA = (list) => {
+  // const posting_lists = useSelector((state) => state.magazine.list);
+  // console.log(posting_lists);
+  const index = useParams();
+  const posting = list.list[index.index];
+  console.log(list.is_login);
   const dispatch = useDispatch();
 
   return (
-    <PostBox>
-      <ProfileWrap>
-        <Profile>
-          <ProfileImg profileImage={list.list.user_profileImage} />
-          <Nickname>{list.list.user_nickname}</Nickname>
-        </Profile>
-        {auth.currentUser !== null
-          ? list.list.user_id === auth.currentUser.email && (
-              <DeleteBtn
-                onClick={() => {
-                  dispatch(deleteMagazineFB(list.list.id));
-                }}
-              >
-                삭제
-              </DeleteBtn>
-            )
-          : null}
-      </ProfileWrap>
+    <>
+      <Margin />
+      <Wrap>
+        <PostBox>
+          <ProfileWrap>
+            <Profile>
+              <ProfileImg profileImage={posting.user_profileImage} />
+              <Nickname>{posting.user_nickname}</Nickname>
+            </Profile>
+            {auth.currentUser !== null
+              ? posting.user_id === auth.currentUser.email && (
+                  <DeleteBtn
+                    onClick={() => {
+                      dispatch(deleteMagazineFB(list.list.id));
+                    }}
+                  >
+                    삭제
+                  </DeleteBtn>
+                )
+              : null}
+          </ProfileWrap>
 
-      <PostImage
-        postImage={list.list.posting_image}
-        onClick={() => {
-          navigate(`/detail/a/${list.index}`);
-        }}
-      />
-      <PostContent>
-        <Nickname>{list.list.user_nickname}</Nickname>
-        {list.list.posting_text}
-      </PostContent>
-      <PostDate>{list.list.posting_time}</PostDate>
-      <Hr />
-    </PostBox>
+          <PostImage postImage={posting.posting_image} />
+          <PostContent>
+            <Nickname>{posting.user_nickname}</Nickname>
+            {posting.posting_text}
+          </PostContent>
+          <PostDate>{posting.posting_time}</PostDate>
+          <Hr />
+        </PostBox>
+      </Wrap>
+    </>
   );
 };
+const Margin = styled.div`
+  width: 100vw;
+  height: 8vh;
+`;
+
+const Wrap = styled.div`
+  max-width: 600px;
+  width: 100vw;
+  height: auto;
+  margin: auto;
+`;
 
 const PostBox = styled.div`
   width: auto;
@@ -56,6 +69,14 @@ const PostBox = styled.div`
   justify-content: center;
   text-align: left;
   margin-top: 30px;
+`;
+
+const Profile = styled.div`
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const ProfileWrap = styled.div`
@@ -74,14 +95,6 @@ const DeleteBtn = styled.button`
   font-size: 16px;
   background-color: transparent;
   border: none;
-`;
-
-const Profile = styled.div`
-  max-width: 600px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 `;
 
 const ProfileImg = styled.div`
@@ -107,6 +120,7 @@ const PostImage = styled.div`
   width: 100%;
   padding-bottom: 100%;
   margin-top: 20px;
+  background-color: #ddd;
   background-image: url(${(props) => props.postImage});
   background-position: center 30%;
   background-size: cover;
@@ -136,4 +150,4 @@ const Hr = styled.hr`
   border: 0.5px solid #f2f2f2;
 `;
 
-export default PostBoxA;
+export default DetailA;
