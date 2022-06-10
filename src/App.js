@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./shared/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useSelector } from "react-redux";
@@ -18,7 +18,9 @@ import Write from "./Write";
 import DetailA from "./DetailA";
 import DetailB from "./DetailB";
 import DetailC from "./DetailC";
-// import UserProfile from ""
+import ModifiA from "./ModifiA";
+import ModifiB from "./ModifiB";
+import ModifiC from "./ModifiC";
 
 function App() {
   const navigate = useNavigate();
@@ -26,12 +28,9 @@ function App() {
   const [is_login, setIsLogin] = React.useState(false);
   const [userData, setUserData] = useState(false);
 
-  console.log(userData);
-
   const loginCheck = async (user) => {
     if (user) {
       setIsLogin(true);
-      querySnapshot();
     } else {
       setIsLogin(false);
     }
@@ -86,6 +85,7 @@ function App() {
   // 전역으로 쓸 수 있게 포스팅 리스트를 전부 불러와서 인자로 보내주자
   const posting_lists = useSelector((state) => state.magazine.list);
   const dispatch = useDispatch();
+  console.log(posting_lists);
 
   React.useEffect(() => {
     dispatch(loadMagazineFB());
@@ -130,26 +130,34 @@ function App() {
         <Route
           path="/"
           element={<Main is_login={is_login} user_data={user_lists} />}
-          exact
         />
         <Route
           path="/detail/a/:index"
           element={<DetailA list={posting_lists} is_login={is_login} />}
-          exact
         />
         <Route
-          path="/detail/B/:index"
+          path="/detail/b/:index"
           element={<DetailB list={posting_lists} is_login={is_login} />}
-          exact
         />
         <Route
-          path="/detail/C/:index"
+          path="/detail/c/:index"
           element={<DetailC list={posting_lists} is_login={is_login} />}
-          exact
         />
-        <Route path="/login" element={<Login />} exact />
-        <Route path="/signup" element={<Signup />} exact />
-        <Route path="/write" element={<Write />} exact />
+        <Route
+          path="/detail/a/modifi/:index"
+          element={<ModifiA list={posting_lists} is_login={is_login} />}
+        />
+        <Route
+          path="/detail/b/modifi/:index"
+          element={<ModifiB list={posting_lists} is_login={is_login} />}
+        />
+        <Route
+          path="/detail/c/modifi/:index"
+          element={<ModifiC list={posting_lists} is_login={is_login} />}
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/write" element={<Write />} />
       </Routes>
     </div>
   );

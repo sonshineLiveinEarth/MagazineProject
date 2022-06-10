@@ -1,22 +1,42 @@
 import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { deleteMagazineFB } from "./redux/modules/magazine";
+import { modifiMagazineFB } from "./redux/modules/magazine";
 import { useDispatch } from "react-redux";
-import { auth } from "./shared/firebase";
 import { useNavigate } from "react-router-dom";
 
-const DetailB = (list) => {
+import { auth } from "./shared/firebase";
+
+const ModifiC = (list) => {
+  const navigate = useNavigate();
+
   const index = useParams();
   const posting = list.list[index.index];
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const text = React.useRef(null);
+  const magazine_id = list.list[index.index].id;
+
+  const modifiMagazine = async (magazine_id) => {
+    const modifi = {
+      posting_id: list.list[index.index].posting_id,
+      posting_comment: list.list[index.index].posting_comment,
+      posting_image: list.list[index.index].posting_image,
+      posting_layoutType: list.list[index.index].posting_layoutType,
+      posting_like: list.list[index.index].posting_like,
+      posting_text: text.current.value,
+      posting_time: list.list[index.index].posting_time,
+      user_id: list.list[index.index].user_id,
+      user_nickname: list.list[index.index].user_nickname,
+      user_profileImage: list.list[index.index].user_profileImage,
+    };
+    await dispatch(modifiMagazineFB(modifi, magazine_id));
+  };
 
   return (
     <>
       <Margin />
       <Wrap>
-        <PostBox2>
+        <PostBox3>
           <ProfileWrap>
             <Profile>
               <ProfileImg profileImage={posting.user_profileImage} />
@@ -27,35 +47,27 @@ const DetailB = (list) => {
                   <>
                     <ModifiBtn
                       onClick={() => {
-                        navigate(`/detail/c/modifi/${index.index}`);
-                      }}
-                    >
-                      수정
-                    </ModifiBtn>
-                    <DeleteBtn
-                      onClick={() => {
-                        dispatch(deleteMagazineFB(posting.id));
+                        modifiMagazine(magazine_id);
                         navigate("/");
                       }}
                     >
-                      삭제
-                    </DeleteBtn>
+                      수정완료
+                    </ModifiBtn>
                   </>
                 )
               : null}
           </ProfileWrap>
 
           <ContentsWrapB>
-            <PostContentB>
-              {posting.posting_text}
-              <PostDateB>{posting.posting_time}</PostDateB>
-            </PostContentB>
-
             <PostImageB postImage={posting.posting_image} />
+            <TextWrap>
+              <PostContentB ref={text} defaultValue={posting.posting_text} />
+              <PostDateB>{posting.posting_time}</PostDateB>
+            </TextWrap>
           </ContentsWrapB>
 
           <Hr />
-        </PostBox2>
+        </PostBox3>
       </Wrap>
     </>
   );
@@ -73,7 +85,7 @@ const Wrap = styled.div`
   margin: auto;
 `;
 
-const PostBox2 = styled.div`
+const PostBox3 = styled.div`
   width: auto;
   height: auto;
   display: flex;
@@ -100,24 +112,19 @@ const ProfileWrap = styled.div`
 `;
 
 const ModifiBtn = styled.button`
-  width: 50px;
-  height: auto;
-  text-decoration: underline;
-  color: #aaa;
+  width: 80px;
+  height: 26px;
+  border-radius: 4px;
+  color: white;
   font-size: 14px;
-  background-color: transparent;
-  border: none;
-`;
-
-const DeleteBtn = styled.button`
-  width: 60px;
-  height: auto;
-  text-decoration: underline;
-  color: #aaa;
-  font-size: 14px;
-  background-color: transparent;
-  border: none;
+  background-color: black;
+  border: 1px solid black;
   margin-right: 26px;
+  &:hover {
+    background-color: transparent;
+    color: black;
+    font-weight: bold;
+  }
 `;
 
 const ProfileImg = styled.div`
@@ -143,6 +150,7 @@ const ContentsWrapB = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
 `;
 
 const PostImageB = styled.div`
@@ -150,15 +158,25 @@ const PostImageB = styled.div`
   width: 50%;
   padding-bottom: 50%;
   margin-top: 20px;
-  align-self: flex-end;
+  /* align-self: flex-end; */
   background-color: #ddd;
   background-image: url(${(props) => props.postImage});
   background-position: center 30%;
   background-size: cover;
 `;
-const PostContentB = styled.div`
+
+const TextWrap = styled.div`
   max-width: 300px;
   width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+`;
+
+const PostContentB = styled.textarea`
+  max-width: 300px;
+  width: 80%;
+  height: 200px;
   font-size: 16px;
   margin: 18px 26px 10px 26px;
   display: flex;
@@ -168,6 +186,7 @@ const PostDateB = styled.span`
   font-size: 14px;
   color: #a2a2a2;
   margin-top: 10px;
+  margin-left: 26px;
 `;
 
 const Hr = styled.hr`
@@ -177,4 +196,4 @@ const Hr = styled.hr`
   border: 0.5px solid #f2f2f2;
 `;
 
-export default DetailB;
+export default ModifiC;

@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loadMagazineFB } from "./redux/modules/magazine";

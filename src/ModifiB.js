@@ -1,16 +1,34 @@
 import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { deleteMagazineFB } from "./redux/modules/magazine";
+import { modifiMagazineFB } from "./redux/modules/magazine";
 import { useDispatch } from "react-redux";
-import { auth } from "./shared/firebase";
 import { useNavigate } from "react-router-dom";
+import { auth } from "./shared/firebase";
 
-const DetailB = (list) => {
+const ModifiB = (list) => {
+  const navigate = useNavigate();
   const index = useParams();
   const posting = list.list[index.index];
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const text = React.useRef(null);
+  const magazine_id = list.list[index.index].id;
+
+  const modifiMagazine = (magazine_id) => {
+    const modifi = {
+      posting_id: list.list[index.index].posting_id,
+      posting_comment: list.list[index.index].posting_comment,
+      posting_image: list.list[index.index].posting_image,
+      posting_layoutType: list.list[index.index].posting_layoutType,
+      posting_like: list.list[index.index].posting_like,
+      posting_text: text.current.value,
+      posting_time: list.list[index.index].posting_time,
+      user_id: list.list[index.index].user_id,
+      user_nickname: list.list[index.index].user_nickname,
+      user_profileImage: list.list[index.index].user_profileImage,
+    };
+    dispatch(modifiMagazineFB(modifi, magazine_id));
+  };
 
   return (
     <>
@@ -27,19 +45,12 @@ const DetailB = (list) => {
                   <>
                     <ModifiBtn
                       onClick={() => {
-                        navigate(`/detail/c/modifi/${index.index}`);
-                      }}
-                    >
-                      수정
-                    </ModifiBtn>
-                    <DeleteBtn
-                      onClick={() => {
-                        dispatch(deleteMagazineFB(posting.id));
+                        modifiMagazine(magazine_id);
                         navigate("/");
                       }}
                     >
-                      삭제
-                    </DeleteBtn>
+                      수정완료
+                    </ModifiBtn>
                   </>
                 )
               : null}
@@ -100,24 +111,19 @@ const ProfileWrap = styled.div`
 `;
 
 const ModifiBtn = styled.button`
-  width: 50px;
-  height: auto;
-  text-decoration: underline;
-  color: #aaa;
+  width: 80px;
+  height: 26px;
+  border-radius: 4px;
+  color: white;
   font-size: 14px;
-  background-color: transparent;
-  border: none;
-`;
-
-const DeleteBtn = styled.button`
-  width: 60px;
-  height: auto;
-  text-decoration: underline;
-  color: #aaa;
-  font-size: 14px;
-  background-color: transparent;
-  border: none;
+  background-color: black;
+  border: 1px solid black;
   margin-right: 26px;
+  &:hover {
+    background-color: transparent;
+    color: black;
+    font-weight: bold;
+  }
 `;
 
 const ProfileImg = styled.div`
@@ -177,4 +183,4 @@ const Hr = styled.hr`
   border: 0.5px solid #f2f2f2;
 `;
 
-export default DetailB;
+export default ModifiB;

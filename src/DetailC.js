@@ -4,11 +4,14 @@ import { useParams } from "react-router-dom";
 import { deleteMagazineFB } from "./redux/modules/magazine";
 import { useDispatch } from "react-redux";
 import { auth } from "./shared/firebase";
+import { useNavigate } from "react-router-dom";
 
 const DetailC = (list) => {
   const index = useParams();
   const posting = list.list[index.index];
+  console.log(index.index);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -23,10 +26,17 @@ const DetailC = (list) => {
             {auth.currentUser !== null
               ? posting.user_id === auth.currentUser.email && (
                   <>
-                    <ModifiBtn>수정</ModifiBtn>
+                    <ModifiBtn
+                      onClick={() => {
+                        navigate(`/detail/c/modifi/${index.index}`);
+                      }}
+                    >
+                      수정
+                    </ModifiBtn>
                     <DeleteBtn
                       onClick={() => {
-                        dispatch(deleteMagazineFB(list.list.id));
+                        dispatch(deleteMagazineFB(posting.id));
+                        navigate("/");
                       }}
                     >
                       삭제
@@ -90,11 +100,11 @@ const ProfileWrap = styled.div`
 `;
 
 const ModifiBtn = styled.button`
-  width: 60px;
+  width: 50px;
   height: auto;
   text-decoration: underline;
   color: #aaa;
-  font-size: 16px;
+  font-size: 14px;
   background-color: transparent;
   border: none;
 `;
@@ -104,9 +114,10 @@ const DeleteBtn = styled.button`
   height: auto;
   text-decoration: underline;
   color: #aaa;
-  font-size: 16px;
+  font-size: 14px;
   background-color: transparent;
   border: none;
+  margin-right: 26px;
 `;
 
 const ProfileImg = styled.div`

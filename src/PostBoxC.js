@@ -2,12 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { auth } from "./shared/firebase";
-import { deleteMagazineFB } from "./redux/modules/magazine";
-import { useDispatch } from "react-redux";
 
 const PostBoxC = (list) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   return (
     <PostBox3>
@@ -20,10 +17,10 @@ const PostBoxC = (list) => {
           ? list.list.user_id === auth.currentUser.email && (
               <DeleteBtn
                 onClick={() => {
-                  dispatch(deleteMagazineFB(list.list.id));
+                  navigate(`/detail/c/${list.index}`);
                 }}
               >
-                삭제
+                수정
               </DeleteBtn>
             )
           : null}
@@ -78,9 +75,10 @@ const DeleteBtn = styled.button`
   height: auto;
   text-decoration: underline;
   color: #aaa;
-  font-size: 16px;
+  font-size: 14px;
   background-color: transparent;
   border: none;
+  margin-right: 26px;
 `;
 
 const ProfileImg = styled.div`

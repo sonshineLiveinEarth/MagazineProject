@@ -185,6 +185,32 @@ export const updateMagazineFB = (magazine_id, magazine_completed) => {
   };
 };
 
+export const modifiMagazineFB = (modifi, magazine_id) => {
+  return async function (dispatch, getState) {
+    const docRef = doc(db, "magazine", magazine_id);
+    await updateDoc(docRef, {
+      posting_id: modifi.posting_id,
+      posting_comment: modifi.posting_comment,
+      posting_image: modifi.posting_image,
+      posting_layoutType: modifi.posting_layoutType,
+      posting_like: modifi.posting_like,
+      posting_text: modifi.posting_text,
+      posting_time: modifi.posting_time,
+      user_id: modifi.user_id,
+      user_nickname: modifi.user_nickname,
+      user_profileImage: modifi.user_profileImage,
+    });
+
+    console.log(getState().magazine);
+    const _magazine_list = getState().magazine.list;
+    _magazine_list.findIndex((m) => {
+      return m.id === magazine_id;
+    });
+
+    dispatch(updateMagazine(magazine_id));
+  };
+};
+
 export const deleteMagazineFB = (magazine_id) => {
   return async function (dispatch, getState) {
     if (!magazine_id) {
