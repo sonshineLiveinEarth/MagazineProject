@@ -1,70 +1,25 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<h2>프로젝트 개요</h2>
+일정 : 2022.06.03 ~ 2022.06.09 <br/>
+사용 기술 : React, redux-toolkit, styled-components, firebase
+<br/><br/>
+<h2>기능구현</h2>
+1. 회원가입 페이지<br/>
+     a. 이메일 형식 체크, 비밀번호 체크할 것<br/><br/>
+2. 로그인 페이지<br/>
+    a. 이메일, 패스워드 미기입 시 로그인 버튼 활성화 막을 것<br/><br/>
+    
+3. 메인 페이지(게시글 목록 페이지)<br/>
+    a. 게시글 목록 노출<br/>
+    b. 게시글 하나는 작성자, 작성 시간, 이미지 미리보기, 텍스트 내용으로 구성<br/>
+    c. 게시글 하나를 클릭 시, 게시글 상세 페이지로 이동<br/><br/>
+4. 글 작성 페이지<br/>
+    a. 레이아웃 선택 버튼<br/>
+        1. 3가지 레이아웃 중 선택하도록 한다.<br/>
+            - 이미지가 오른편에, 텍스트는 왼편에 위치한 레이아웃<br/>
+            - 이미지가 왼편에, 텍스트는 오른편에 위치한 레이아웃<br/>
+            - 텍스트가 위에, 이미지는 아래에 위치한 레이아웃<br/>
+        2. 레이아웃 선택 시, 게시글 레이아웃(모양새)대로 보이도록 한다.<br/>
+        3. **텍스트, 이미지 중 입력 안된 게 있다면 게시글 작성 버튼 비활성화**<br/>
+        4. 작성 완료 시 메인 페이지로 이동<br/><br/>
+5. 게시글 상세 페이지<br/>
+    a. 게시글 레이아웃에 맞춰 이미지, 텍스트 위치 조절해서 노출<br/>
