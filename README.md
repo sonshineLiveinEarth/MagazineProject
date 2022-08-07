@@ -1,3 +1,5 @@
+![](https://velog.velcdn.com/images/yunju/post/cd0c24d7-91a5-4ea0-a8da-35a5dc04c73d/image.png)
+
 ## 프로젝트 개요
 
 일정 : 2022.06.03 ~ 2022.06.09 <br/>
